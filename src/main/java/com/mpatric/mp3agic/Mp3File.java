@@ -440,10 +440,14 @@ public class Mp3File extends FileWrapper {
 	}
 
 	public void save(String newFilename) throws IOException, NotSupportedException {
-		if (path.toAbsolutePath().compareTo(Paths.get(newFilename).toAbsolutePath()) == 0) {
+		save(Paths.get(newFilename));
+	}
+
+	public void save(Path newFilename) throws IOException, NotSupportedException {
+		if (path.toAbsolutePath().compareTo(newFilename.toAbsolutePath()) == 0) {
 			throw new IllegalArgumentException("Save filename same as source filename");
 		}
-		try (SeekableByteChannel saveFile = Files.newByteChannel(Paths.get(newFilename), EnumSet.of(StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE))) {
+		try (SeekableByteChannel saveFile = Files.newByteChannel(newFilename, EnumSet.of(StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE))) {
 			if (hasId3v2Tag()) {
 				ByteBuffer byteBuffer = ByteBuffer.wrap(id3v2Tag.toBytes());
 				byteBuffer.rewind();
